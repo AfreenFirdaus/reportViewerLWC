@@ -1,0 +1,64 @@
+<template>
+    <template lwc:if={isLoading}>
+        <div class="slds-is-relative slds-spinner_container" style="position: r;">
+            <div class="loader"></div>
+            <div class="slds-text-color_weak loadingText">{loadingText}</div>
+        </div>
+    </template>
+
+    <template lwc:else>
+        <lightning-card title={reportTitle} icon-name={reportIcon}>
+            <!-- Aggregates -->
+            <div class="slds-p-around_large" style="display:flex; flex-direction:row; justify-content:center; align-items:center; gap: 1rem 1rem;">
+            <template for:each={aggregateFieldsList} for:item="agg">
+                <div 
+                    key={agg.fieldName}
+                    class="slds-box slds-p-around_large header"
+                    style="display:flex; flex-direction:column;"
+                >
+                    <div class="slds-text-heading_medium">{agg.fieldName}</div>
+                    <div class="slds-text-font_monospace slds-text-heading_large">
+                        {agg.value}
+                    </div>
+                </div>
+            </template>
+            </div>
+
+            <!-- Error -->
+            <template lwc:if={error}>
+                <p class="slds-notify slds-notify_alert slds-alert_error">{error}</p>
+            </template>
+
+            <!-- Table -->
+            <template lwc:else>
+                <template lwc:if={showReportTable}>
+                    <lightning-tree-grid
+                        class="slds-p-around_medium"
+                        key-field="Id"
+                        data={reportData}
+                        columns={columns}
+                        expanded-rows={reportData}
+                        hide-checkbox-column
+                    ></lightning-tree-grid>
+
+                    <lightning-button 
+                        label="Refresh" 
+                        slot="actions" 
+                        icon-name="utility:refresh" 
+                        onclick={getReportData}
+                    ></lightning-button>
+                </template>
+            </template>
+
+            <div slot="footer">
+                <p class="slds-align_absolute_center">
+                    <lightning-formatted-url 
+                        label="View Report" 
+                        value={reportLink} 
+                        target="_blank"
+                    ></lightning-formatted-url>
+                </p>
+            </div>
+        </lightning-card>
+    </template>
+</template>
